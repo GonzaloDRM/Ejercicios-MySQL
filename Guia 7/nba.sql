@@ -18558,3 +18558,55 @@ INSERT INTO partidos VALUES (15657,'Suns','Hornets',68,65,'07/08');
 INSERT INTO partidos VALUES (15658,'Suns','Spurs',105,157,'07/08');
 INSERT INTO partidos VALUES (15659,'Suns','Rockets',105,57,'07/08');
 INSERT INTO partidos VALUES (15660,'Suns','Mavericks',69,144,'07/08');
+
+/* 1. Mostrar el nombre de todos los jugadores ordenados alfabéticamente.*/
+SELECT nombre FROM jugadores ORDER BY nombre;
+/* 2. Mostrar el nombre de los jugadores que sean pivots (‘C’) y que pesen más de 200
+libras, ordenados por nombre alfabéticamente.*/
+SELECT nombre FROM jugadores WHERE posicion like '%C%' ORDER BY nombre;
+/* 3. Mostrar el nombre de todos los equipos ordenados alfabéticamente.*/
+SELECT nombre FROM equipos ORDER BY nombre;
+/* 4. Mostrar el nombre de los equipos del este (East).*/
+SELECT nombre FROM equipos WHERE Conferencia = 'East';
+/* 5. Mostrar los equipos donde su ciudad empieza con la letra ‘c’, ordenados por
+nombre.*/
+SELECT nombre FROM equipos WHERE Ciudad LIKE 'C%' ;
+/* 6. Mostrar todos los jugadores y su equipo ordenados por nombre del equipo.*/
+SELECT j.nombre, e.nombre 
+FROM equipos e, jugadores j 
+WHERE e.nombre = j.nombre_equipo 
+ORDER BY e.nombre;
+/*7. Mostrar todos los jugadores del equipo “Raptors” ordenados por nombre.*/
+SELECT * FROM jugadores WHERE Nombre_equipo = 'Raptors' ORDER BY nombre;
+/* 8. Mostrar los puntos por partido del jugador ‘Pau Gasol’.*/
+SELECT e.Puntos_por_partido FROM estadisticas e, jugadores j WHERE j.codigo = e.jugador and j.nombre = 'Pau Gasol';
+/* 9. Mostrar los puntos por partido del jugador ‘Pau Gasol’ en la temporada ’04/05′.*/
+SELECT e.Puntos_por_partido FROM estadisticas e, jugadores j WHERE j.codigo = e.jugador and j.nombre = 'Pau Gasol' and e.temporada = '04/05';
+/* 10. Mostrar el número de puntos de cada jugador en toda su carrera.*/
+SELECT j.nombre, sum(e.puntos_por_partido) as 'suma total' FROM estadisticas e, jugadores j WHERE e.jugador = j.codigo GROUP BY e.jugador;
+/* 11. Mostrar el número de jugadores de cada equipo.*/
+SELECT Nombre_equipo, count(nombre) FROM jugadores GROUP BY Nombre_equipo;
+/* 12. Mostrar el jugador que más puntos ha realizado en toda su carrera.*/
+SELECT j.nombre, max(e.puntos_por_partido) FROM jugadores j, estadisticas e WHERE j.codigo= e.jugador;
+/* 13. Mostrar el nombre del equipo, conferencia y división del jugador más alto de la NBA.*/
+SELECT j.nombre, j.nombre_equipo, j.altura, e.conferencia FROM jugadores j, equipos e WHERE j.nombre_equipo = e.nombre ORDER BY j.altura DESC LIMIT 1;
+/* 14. Mostrar la suma de los puntos por partido de todos los jugadores españoles donde
+el equipo donde juegan este en ‘Los Angeles’.*/
+SELECT j.nombre, sum(e.puntos_por_partido) FROM jugadores j, estadisticas e, equipos eq WHERE j.nombre_equipo = eq.nombre and e.jugador = j.codigo 
+and j.procedencia = 'Spain' and eq.ciudad = 'Los Angeles';
+/* 15. Mostrar la media de puntos en partidos de los equipos de la división Pacific.*/ 
+SELECT avg(e.puntos_por_partido) FROM jugadores j, estadisticas e, equipos eq WHERE j.nombre_equipo = eq.nombre and e.jugador = j.codigo 
+and eq.division = 'Pacific';
+/* 16. Mostrar el partido o partidos (equipo_local, equipo_visitante y diferencia) con mayor
+diferencia de puntos.*/
+SELECT equipo_local, equipo_visitante, max(ABS(puntos_local-puntos_visitante)) FROM partidos;
+/* 17. Mostrar la media de puntos en partidos de los equipos de la división Pacific.*/
+SELECT AVG(p.puntos_local+p.puntos_visitante) FROM partidos p, equipos e WHERE p.equipo_local=e.nombre and division = 'Pacific' ;
+/* 18. Mostrar los puntos de cada equipo en los partidos, tanto de local como de visitante.*/
+SELECT equipo_local, puntos_local, equipo_visitante, puntos_visitante FROM partidos;
+/* 19. Mostrar quien gana en cada partido (codigo, equipo_local, equipo_visitante,
+equipo_ganador), en caso de empate sera null.*/
+SELECT codigo, equipo_local, equipo_visitante, if (puntos_local>puntos_visitante,equipo_local,equipo_visitante) as 'Ganadores' FROM partidos;
+
+
+
